@@ -8,15 +8,17 @@ using namespace std;
 int main()
 {
 	Generator generate;
+	vector<_constraint_touple> constreaints;
 
-	generate.setAlpha(.2);
-	generate.setN(15);
+	generate.setN(7);
+	generate.setP(0.2);
+	generate.setAlpha(.9);
 	generate.setR(0.3);
-	generate.setP(0.1);
-	//cout << generate.calc_constraints() << endl;
-	
 	generate.create();
+	generate.print();
 	
+	constreaints = generate.return_csp();
+	cout << constreaints[1].x.var;
 
 
 	return 0;

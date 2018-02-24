@@ -84,9 +84,6 @@ bool Generator::setR(double value)
 	}
 }
 
-/*
-	END SETTER FUNCTIONS
-*/
 
 /*
 	GETTER FUNCTIONS
@@ -151,7 +148,8 @@ int Generator::get_error(bool val)
 
 
 /*
-	BEGIN GENERATOR FUNCTIONS	
+	GENERATOR FUNCTIONS
+	/////////////////////////////////////////////////////////////////////////////////////////////////
 */
 
 
@@ -201,7 +199,7 @@ int Generator::calc_incompatables()
 	}
 }
 
-bool Generator::unique(int a, int b)
+bool Generator::unique_touple(int a, int b)
 {
 	if (a == b)
 	{
@@ -218,6 +216,23 @@ bool Generator::unique(int a, int b)
 		}
 		return true;
 	}
+}
+
+bool Generator::unique_incompatable(int a, int b, int touple)
+{
+	if (a == b)
+	{
+		return false;
+	}
+	else
+	{
+		for (int i = 0; i < constraint_touples[touple].constraints.size(); i++)
+		{
+			if ((constraint_touples[touple].constraints[i].x == a) && (constraint_touples[touple].constraints[i].y == b))
+				return false;
+		}
+	}
+	return true;
 }
 
 bool Generator::create()
@@ -254,16 +269,14 @@ bool Generator::create()
 	srand(time(NULL));
 	int a, b;
 	number_constraints = calc_constraints();
-	
-	
-	for (int i = 0; i < number_constraints; i++)
+	for (int i = 0; i <= number_constraints; i++)
 	{
 		// make sure variables are distnct
 		_constraint_touple touple;
 		do{
 			a = rand() % n;
 			b = rand() % n;
-		}while(!unique(a,b));
+		} while (!unique_touple(a, b));
 		touple.x = variables[a];
 		touple.y = variables[b];
 		// push touple into array
@@ -274,7 +287,44 @@ bool Generator::create()
 
 	// GENERATE INCOMPATABLES FOR EACH TOUPLE
 	number_incompatables = calc_incompatables();
-	std::cout << number_incompatables << " INCOMP\n";
+	for (int i = 0; i < constraint_touples.size(); i++)
+	{
+		for (int t = 0; t < number_incompatables; t++)
+		{
+			_constraint_values values;
+			do{
+			a = rand() % domain;
+			b = rand() % domain;
+			} while (!unique_incompatable(a, b, i));
+			values.x = a;
+			values.y = b;
+			constraint_touples[i].constraints.push_back(values);
+		}
 
 
+	}
+	// GENERATED INCOMPATABLES FOR EACH TOUPLE
+
+	// END GENERATOR 
+
+}
+
+void Generator::print()
+{
+	for (int i = 0; i < constraint_touples.size(); i++)
+	{
+		std::cout << "<" << constraint_touples[i].x.var << "," << constraint_touples[i].y.var << "> : [";
+		for (int t = 0; t < constraint_touples[i].constraints.size(); t++)
+		{
+			std::cout << "(" << constraint_touples[i].constraints[t].x << "," << constraint_touples[i].constraints[t].y << ") ";
+		}
+		std::cout << " ]" << std::endl;
+	}
+
+
+}
+
+std::vector<_constraint_touple> Generator::return_csp()
+{
+	return constraint_touples;
 }

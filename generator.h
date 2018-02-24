@@ -41,8 +41,11 @@ public:
 	int calc_constraints();
 	int calc_incompatables();
 	int calc_domain();
-	bool unique(int, int);
+	bool unique_touple(int, int);
+	bool unique_incompatable(int, int, int);
 	bool create();
+	void print();
+	std::vector<_constraint_touple> return_csp();
 	
 
 private:
