@@ -1,26 +1,13 @@
+#ifndef GENERATOR_H
+#define GENERATOR_H
+
 #include <stdlib.h>
 #include <math.h>
 #include <time.h>
 #include <vector>
 #include <iostream>
-struct _constraint_values
-{
-	int x;
-	int y;
-};
+#include "storage.h"
 
-struct _variable
-{
-	int var;
-	std::vector<int> domain;
-};
-
-struct _constraint_touple
-{
-	_variable x;
-	_variable y;
-	std::vector<_constraint_values> constraints;
-};
 
 class Generator
 {
@@ -46,6 +33,7 @@ public:
 	bool create();
 	void print();
 	std::vector<_constraint_touple> return_csp();
+	std::vector<_variable> return_var();
 	
 
 private:
@@ -65,3 +53,5 @@ private:
 	std::vector<_constraint_touple> constraint_touples;
 	std::vector<_variable> variables;
 };
+
+#endif

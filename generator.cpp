@@ -255,6 +255,7 @@ bool Generator::create()
 	for (int i = 0; i < n; i++)
 	{
 		curr_var.var = i;
+		curr_var.assignment = UNASSIGNED;
 		for (int t = 0; t < domain; t++)
 		{
 			curr_var.domain.push_back(t);
@@ -307,6 +308,7 @@ bool Generator::create()
 
 	// END GENERATOR 
 
+	return true;
 }
 
 void Generator::print()
@@ -327,4 +329,9 @@ void Generator::print()
 std::vector<_constraint_touple> Generator::return_csp()
 {
 	return constraint_touples;
+}
+
+std::vector<_variable> Generator::return_var()
+{
+	return variables;
 }
