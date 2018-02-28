@@ -14,32 +14,46 @@ int main()
 	Solver solve;
 	vector<_constraint_touple> constreaints;
 	vector<_variable> var;
+	vector<int> assignments;
 	// User input
 	int n, choice, ac;
 	double p, alpha, r;
 	// Timing
 	clock_t s_time, e_time, t_time;
 
-	generate.setN(7);
-	generate.setP(0.2);
-	generate.setAlpha(.9);
-	generate.setR(0.3);
+	generate.setN(5);
+	generate.setP(0.1);
+	generate.setAlpha(.99);
+	generate.setR(0.7);
 	generate.create();
 	generate.print();
-
-
 	constreaints = generate.return_csp();
 	var = generate.return_var();
 
+	cout << "Domain: \n";
+	for (unsigned int i = 0; i < var[0].domain.size(); i++)
+	{
+		cout << var[0].domain[i] << endl;
+	}
+
 	
+	solve.backtrack(var, constreaints);
 
+	if (solve.is_solved())
+	{
+		assignments = solve.return_assign();
+		for (unsigned int i = 0; i < assignments.size(); i++)
+		{
+			cout << "x" << i << " " << assignments[i] << endl;
+		}
+	}
+	else
+	{
+		cout << "No solution";
+	}
 
-	cout << "\nHERE IS IS" << solve.unassigned(var, constreaints);
-	int pos, val;
-	cout << "VALUE:";
-	cin >> val; 
-	cout << "POS :";
-	cin >> pos;
+	
+	
 
 	
 	

@@ -270,7 +270,7 @@ bool Generator::create()
 	srand(time(NULL));
 	int a, b;
 	number_constraints = calc_constraints();
-	for (int i = 0; i <= number_constraints; i++)
+	for (int i = 0; i < number_constraints; i++)
 	{
 		// make sure variables are distnct
 		_constraint_touple touple;
