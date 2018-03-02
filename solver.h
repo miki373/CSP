@@ -15,7 +15,8 @@ public:
 	std::vector<int> return_assign();
 	bool backtrack(std::vector<_variable> vars, std::vector<_constraint_touple> touples);
 	bool is_solved();
-
+	bool is_consistant(int value, int position, std::vector<_variable> vars, std::vector<_constraint_touple> touples);
+	int get_assignment(std::vector<_variable> variables, int x);
 private:
 	std::vector<int> assign;
 	bool copied;

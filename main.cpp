@@ -21,10 +21,10 @@ int main()
 	// Timing
 	clock_t s_time, e_time, t_time;
 
-	generate.setN(5);
-	generate.setP(0.1);
-	generate.setAlpha(.99);
-	generate.setR(0.7);
+	generate.setN(10);
+	generate.setP(0.4);
+	generate.setAlpha(.7);
+	generate.setR(0.8);
 	generate.create();
 	generate.print();
 	constreaints = generate.return_csp();
@@ -36,12 +36,14 @@ int main()
 		cout << var[0].domain[i] << endl;
 	}
 
+
 	
 	solve.backtrack(var, constreaints);
 
 	if (solve.is_solved())
 	{
 		assignments = solve.return_assign();
+		cout << "Solution:\n";
 		for (unsigned int i = 0; i < assignments.size(); i++)
 		{
 			cout << "x" << i << " " << assignments[i] << endl;
@@ -49,7 +51,7 @@ int main()
 	}
 	else
 	{
-		cout << "No solution";
+		cout << "No solution\n";
 	}
 
 	

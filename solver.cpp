@@ -41,47 +41,16 @@ int Solver::unassigned(std::vector<_variable> vars, std::vector<_constraint_toup
 	return pos;
 }
 
-// checks if given value is compatable with constraints placed upon this variable
-// true if compatable
-// else if not
-bool Solver::is_valid(int value,_variable var, std::vector<_constraint_touple> touples)
-{
-	for (unsigned int i = 0; i < touples.size(); i++)
-	{
-		if (var.var == touples[i].x.var)
-		{
-			for (unsigned int k = 0; k < touples[i].constraints.size(); k++)
-			{
-				int x = touples[i].constraints[k].x;
-				if (value == x)
-				{
-					return false;
-				}
-			}
-		}
-		else if (var.var == touples[i].y.var)
-		{
-			for (unsigned int k = 0; k < touples[i].constraints.size(); k++)
-			{
-				int y = touples[i].constraints[k].y;
-				if (value == y)
-				{
-					return false;
-				}
-			}
-		}
-	}
-	return true;
-}
+
 
 bool Solver::copy_to_assign(std::vector<_variable> vars)
 {
 	for (unsigned int i = 0; i < vars.size(); i++)
 	{
-		if (vars[i].assignment == -1)
+		/*if (vars[i].assignment == -1)
 		{
 			vars[i].assignment = 0;
-		}
+		}*/
 		assign.push_back(vars[i].assignment);
 	}
 	copied = true;
@@ -92,6 +61,7 @@ std::vector<int> Solver::return_assign()
 {
 	return assign;
 }
+
 
 bool Solver::backtrack(std::vector<_variable> vars, std::vector<_constraint_touple> touples)
 {
@@ -109,14 +79,13 @@ bool Solver::backtrack(std::vector<_variable> vars, std::vector<_constraint_toup
 	int next_unassigned_var_position = unassigned(vars, touples);
 	int value_of_var;
 	bool assigned = false;
-	bool good_below = false;
+	
 	for (unsigned int i = 0; i < vars[next_unassigned_var_position].domain.size(); i++)
 	{
 		value_of_var = vars[next_unassigned_var_position].domain[i];
-		if (is_valid(value_of_var, vars[next_unassigned_var_position], touples))
+		if (is_consistant(value_of_var, next_unassigned_var_position, vars, touples))
 		{
 			vars[next_unassigned_var_position].assignment = value_of_var;
-			assigned = true;
 			assigned = backtrack(vars, touples);
 			if (assigned)
 			{
@@ -125,11 +94,63 @@ bool Solver::backtrack(std::vector<_variable> vars, std::vector<_constraint_toup
 		}
 	}
 	if (!assigned)
-		return false;	
+	{
+		return false;
+	}
 }
 
 
 bool Solver::is_solved()
 {
 	return solved;
+}
+
+bool Solver::is_consistant(int proposed_value,int position, std::vector<_variable> variables, std::vector<_constraint_touple> touple)
+{
+	int other_value;
+	for (unsigned int i = 0; i < touple.size(); i++)
+	{
+		// check if this variable is in constraints tuple x position
+		if (variables[position].var == touple[i].x.var)
+		{
+			// value of other variable, in this case y
+			// if unassigned, y will be -1
+			other_value = get_assignment(variables, touple[i].y.var);
+
+			for (unsigned int k = 0; k < touple[i].constraints.size(); k++)
+			{
+				// this proposed value violates constraints, return false
+				if ((proposed_value == touple[i].constraints[k].x) && (other_value == touple[i].constraints[k].y))
+				{
+					return false;
+				}
+			}
+		}//endif
+
+		if (variables[position].var == touple[i].y.var)
+		{
+			other_value = get_assignment(variables, touple[i].x.var);
+
+			for (unsigned int k = 0; k < touple[i].constraints.size(); k++)
+			{
+				if ((proposed_value == touple[i].constraints[k].y) && (other_value == touple[i].constraints[k].x))
+				{
+					return false;
+				}
+			}
+		}// endif
+	}//endfor
+
+	return true;
+}
+
+int Solver::get_assignment(std::vector<_variable> vars, int x)
+{
+	for (unsigned int i = 0; i < vars.size(); i++)
+	{
+		if (vars[i].var == x)
+		{
+			return vars[i].assignment;
+		}
+	}
 }

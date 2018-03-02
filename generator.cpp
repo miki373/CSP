@@ -220,18 +220,13 @@ bool Generator::unique_touple(int a, int b)
 
 bool Generator::unique_incompatable(int a, int b, int touple)
 {
-	if (a == b)
+	
+	for (int i = 0; i < constraint_touples[touple].constraints.size(); i++)
 	{
-		return false;
+		if ((constraint_touples[touple].constraints[i].x == a) && (constraint_touples[touple].constraints[i].y == b))
+			return false;
 	}
-	else
-	{
-		for (int i = 0; i < constraint_touples[touple].constraints.size(); i++)
-		{
-			if ((constraint_touples[touple].constraints[i].x == a) && (constraint_touples[touple].constraints[i].y == b))
-				return false;
-		}
-	}
+	
 	return true;
 }
 
@@ -274,6 +269,8 @@ bool Generator::create()
 	{
 		// make sure variables are distnct
 		_constraint_touple touple;
+
+		
 		do{
 			a = rand() % n;
 			b = rand() % n;
