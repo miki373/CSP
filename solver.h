@@ -3,6 +3,7 @@
 #include "storage.h"
 #include <vector>
 #include <iostream>
+#include <queue>
 
 
 class Solver
@@ -17,6 +18,10 @@ public:
 	bool is_solved();
 	bool is_consistant(int value, int position, std::vector<_variable> vars, std::vector<_constraint_touple> touples);
 	int get_assignment(std::vector<_variable> variables, int x);
+	std::vector<_variable> ac(std::vector<_variable> vars, std::vector<_constraint_touple> constraints);
+	bool revise(_constraint_touple touple, _variable& xi, _variable& xj);
+	int variable_position(std::vector<_variable> vars, int variable);
+
 private:
 	std::vector<int> assign;
 	bool copied;

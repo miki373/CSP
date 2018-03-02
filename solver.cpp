@@ -5,7 +5,8 @@ Solver::Solver()
 	solved = false;
 }
 
-// Return most constrained variable position in array
+// Return most constrained variable (its position in vector) because that
+// variable will theoretically fail first and reduce the depth of search
 // Using integer to save resources
 int Solver::unassigned(std::vector<_variable> vars, std::vector<_constraint_touple> touples)
 {
@@ -105,6 +106,7 @@ bool Solver::is_solved()
 	return solved;
 }
 
+// checks if assignment is consistant with constraints
 bool Solver::is_consistant(int proposed_value,int position, std::vector<_variable> variables, std::vector<_constraint_touple> touple)
 {
 	int other_value;
@@ -144,6 +146,7 @@ bool Solver::is_consistant(int proposed_value,int position, std::vector<_variabl
 	return true;
 }
 
+// returns assignment of variable if there is any. 
 int Solver::get_assignment(std::vector<_variable> vars, int x)
 {
 	for (unsigned int i = 0; i < vars.size(); i++)
@@ -153,4 +156,62 @@ int Solver::get_assignment(std::vector<_variable> vars, int x)
 			return vars[i].assignment;
 		}
 	}
+	return -1;
+}
+
+// ac algorithm based on psudocode found in
+// credit "Artificial Intellegence: A modern approach"
+std::vector<_variable> Solver::ac(std::vector<_variable> vars, std::vector<_constraint_touple> constraints)
+{
+	std::queue<_constraint_touple> contraints_queue;
+	_constraint_touple temp;
+
+	// push all constraint into queue
+	for (unsigned int i = 0; i < constraints.size(); i++)
+	{
+		contraints_queue.push(constraints[i]);
+	}
+
+	while (!contraints_queue.empty())
+	{
+		temp = contraints_queue.front();// get next time
+		contraints_queue.pop();	// remove next item
+
+	}
+	return vars;
+}
+
+bool Solver::revise(_constraint_touple touple, _variable& xi, _variable& xj)
+{
+	bool revised = false;
+	bool unsatisfied;
+	
+	for (unsigned int i = 0; i < xi.domain.size(); i++)
+	{
+		unsatisfied = false;
+		for (unsigned int j = 0; j < xj.domain.size(); j++)
+		{
+			for (unsigned int k = 0; k < touple.constraints.size(); k++)
+			{
+				// check if exists compatable pair in domain
+				if ((xi.domain[i] == touple.constraints[k].x) && (xj.domain[j] == touple.constraints[k].y))
+				{
+					unsatisfied = true;
+					break;
+				}
+			}
+			if (unsatisfied)
+			{
+				break;
+			}
+		}
+		if (unsatisfied)
+		{
+			xi.domain.erase(xi.domain.begin() + i);
+			--i;;
+			revised = true;
+		}
+
+	}
+	return revised;
 }
