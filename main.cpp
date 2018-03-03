@@ -13,7 +13,7 @@ int main()
 	Generator generate;
 	
 	Solver solve;
-	/*
+	
 	vector<_constraint_touple> constreaints;
 	vector<_variable> var;
 	vector<int> assignments;
@@ -23,8 +23,8 @@ int main()
 	// Timing
 	clock_t s_time, e_time, t_time;
 
-	generate.setN(5);
-	generate.setP(0.3);
+	generate.setN(15);
+	generate.setP(0.4);
 	generate.setAlpha(.7);
 	generate.setR(0.8);
 	generate.create();
@@ -37,86 +37,11 @@ int main()
 	{
 		cout << var[0].domain[i] << endl;
 	}
-	*/
+	
 
+	solve.ac(var, constreaints);
 
 	
-	_constraint_touple constraint;
-	_variable x;
-	_variable y;
-
-
-	x.domain.push_back(0);
-	x.domain.push_back(1);
-	x.domain.push_back(2);
-	
-	y.domain.push_back(0);
-	y.domain.push_back(1);
-	y.domain.push_back(2);
-
-	constraint.x = x;
-	constraint.y = y;
-
-	_constraint_values values;
-
-	values.x = 0;
-	values.y = 0;
-	constraint.constraints.push_back(values);
-	values.x = 0;
-	values.y = 1;
-	constraint.constraints.push_back(values);
-	values.x = 0;
-	values.y = 2;
-	constraint.constraints.push_back(values);
-
-	values.x = 1;
-	values.y = 0;
-	constraint.constraints.push_back(values);
-	values.x = 1;
-	values.y = 1;
-	constraint.constraints.push_back(values);
-	values.x = 1;
-	values.y = 2;
-	constraint.constraints.push_back(values);
-
-
-	values.x = 1;
-	values.y = 0;
-	constraint.constraints.push_back(values);
-	values.x = 1;
-	values.y = 1;
-	constraint.constraints.push_back(values);
-	values.x = 1;
-	values.y = 2;
-	constraint.constraints.push_back(values);
-
-	solve.revise(constraint, x, y);
-
-	for (int i = 0; i < x.domain.size(); i++)
-	{
-		cout << x.domain[i] << ' ';
-	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	/*
 
 	solve.backtrack(var, constreaints);
 
@@ -134,7 +59,7 @@ int main()
 		cout << "No solution\n";
 	}
 
-	*/
+	
 	
 	
 

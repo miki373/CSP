@@ -161,10 +161,11 @@ int Solver::get_assignment(std::vector<_variable> vars, int x)
 
 // ac algorithm based on psudocode found in
 // credit "Artificial Intellegence: A modern approach"
-std::vector<_variable> Solver::ac(std::vector<_variable> vars, std::vector<_constraint_touple> constraints)
+bool Solver::ac(std::vector<_variable>& vars, std::vector<_constraint_touple> constraints)
 {
 	std::queue<_constraint_touple> contraints_queue;
 	_constraint_touple temp;
+	int temp_pos_x, temp_pos_y;
 
 	// push all constraint into queue
 	for (unsigned int i = 0; i < constraints.size(); i++)
@@ -172,13 +173,45 @@ std::vector<_variable> Solver::ac(std::vector<_variable> vars, std::vector<_cons
 		contraints_queue.push(constraints[i]);
 	}
 
+	// begin AC
 	while (!contraints_queue.empty())
 	{
 		temp = contraints_queue.front();// get next time
 		contraints_queue.pop();	// remove next item
 
+		temp_pos_x = variable_position(vars, temp.x.var);
+		temp_pos_y = variable_position(vars, temp.y.var);
+
+
+		std::cout << "AC DELETE";
+		if (revise(temp, vars[temp_pos_x], vars[temp_pos_y]))
+		{
+			if (vars[temp_pos_x].domain.size() == 0)
+			{
+				return false;
+			}
+
+
+			
+			for (unsigned int i = 0; i < constraints.size(); i++)
+			{
+				if (constraints[i].x.var == vars[temp_pos_x].var && constraints[i].y.var != vars[temp_pos_y].var)
+				{
+					_variable temp = constraints[i].x;
+					constraints[i].x = constraints[i].y;
+					constraints[i].y = temp;
+					contraints_queue.push(constraints[i]);
+				}
+				else if (constraints[i].y.var == vars[temp_pos_x].var)
+				{
+					contraints_queue.push(constraints[i]);
+				}
+			}
+		}
+
 	}
-	return vars;
+	return true;
+	
 }
 
 // NOTE * this is my inplementation of revise function psudocode found in "Artificial Intellegence: A modern approach (3rd Edition)"
@@ -215,4 +248,18 @@ bool Solver::revise(_constraint_touple touple, _variable& xi, _variable& xj)
 
 	}
 	return revised;
+}
+
+
+int Solver::variable_position(std::vector<_variable> vars, int variable)
+{
+	for (unsigned int i = 0; i < vars.size(); i++)
+	{
+		if (vars[i].var == variable)
+		{
+			return i;
+		}
+	}
+
+	return -1;
 }
