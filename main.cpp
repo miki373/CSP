@@ -69,6 +69,27 @@ int main()
 	values.y = 2;
 	constraint.constraints.push_back(values);
 
+	values.x = 1;
+	values.y = 0;
+	constraint.constraints.push_back(values);
+	values.x = 1;
+	values.y = 1;
+	constraint.constraints.push_back(values);
+	values.x = 1;
+	values.y = 2;
+	constraint.constraints.push_back(values);
+
+
+	values.x = 1;
+	values.y = 0;
+	constraint.constraints.push_back(values);
+	values.x = 1;
+	values.y = 1;
+	constraint.constraints.push_back(values);
+	values.x = 1;
+	values.y = 2;
+	constraint.constraints.push_back(values);
+
 	solve.revise(constraint, x, y);
 
 	for (int i = 0; i < x.domain.size(); i++)

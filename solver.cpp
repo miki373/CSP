@@ -181,34 +181,35 @@ std::vector<_variable> Solver::ac(std::vector<_variable> vars, std::vector<_cons
 	return vars;
 }
 
+// NOTE * this is my inplementation of revise function psudocode found in "Artificial Intellegence: A modern approach (3rd Edition)"
+// Algorithm:
+// given xi, this function checks if there exists any value in dj such that
+// (xi, dj) satesfies the constraint, if there isn't, remove xi from domain. 
 bool Solver::revise(_constraint_touple touple, _variable& xi, _variable& xj)
 {
 	bool revised = false;
-	bool unsatisfied;
+	unsigned int unsatasfied;
 	
 	for (unsigned int i = 0; i < xi.domain.size(); i++)
 	{
-		unsatisfied = false;
+		unsatasfied = 0;
 		for (unsigned int j = 0; j < xj.domain.size(); j++)
-		{
+		{	
 			for (unsigned int k = 0; k < touple.constraints.size(); k++)
 			{
 				// check if exists compatable pair in domain
 				if ((xi.domain[i] == touple.constraints[k].x) && (xj.domain[j] == touple.constraints[k].y))
 				{
-					unsatisfied = true;
+					unsatasfied++;
 					break;
 				}
 			}
-			if (unsatisfied)
-			{
-				break;
-			}
+
 		}
-		if (unsatisfied)
+		if (unsatasfied == xj.domain.size())
 		{
 			xi.domain.erase(xi.domain.begin() + i);
-			--i;;
+			i--;
 			revised = true;
 		}
 
