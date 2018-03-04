@@ -1,5 +1,9 @@
 #ifndef SOLVER_H
 #define SOLVER_H
+
+#define NONE 1
+#define FC 2
+#define MAC 3
 #include "storage.h"
 #include <vector>
 #include <iostream>
@@ -14,7 +18,7 @@ public:
 	bool is_valid(int value, _variable var, std::vector<_constraint_touple> touples);
 	bool copy_to_assign(std::vector<_variable> vars);
 	std::vector<int> return_assign();
-	bool backtrack(std::vector<_variable> vars, std::vector<_constraint_touple> touples);
+	bool backtrack(std::vector<_variable> vars, std::vector<_constraint_touple> touples, int type);
 	bool is_solved();
 	bool is_consistant(int value, int position, std::vector<_variable> vars, std::vector<_constraint_touple> touples);
 	int get_assignment(std::vector<_variable> variables, int x);

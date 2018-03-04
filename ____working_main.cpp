@@ -24,30 +24,29 @@ int main()
 
 
 	do{
-		cout << "Enter n: "; cin >> n;
+	cout << "Enter n: "; cin >> n;
 	} while (!generate.setN(n));
 
 	do
 	{
-		cout << "Enter p: "; cin >> p;
+	cout << "Enter p: "; cin >> p;
 	} while (!generate.setP(p));
 
 	do{
-		cout << "Enter alpha: "; cin >> alpha;
+	cout << "Enter alpha: "; cin >> alpha;
 	} while (!generate.setAlpha(alpha));
 
 	do{
-		cout << "Enter r: "; cin >> r;
+	cout << "Enter r: "; cin >> r;
 	} while (!generate.setR(r));
 
 	cout << "Generating CSP...\n";
-	generate.create();
 	constreaints = generate.return_csp();
 	var = generate.return_var();
 	generate.print();
 
 	do{
-		cout << "AC Arch consistancy yes [1] no [0]\nChoice: "; cin >> ac;
+		cout << "AC Arch consistancy yes [1] no [0]"; cin >> ac;
 	} while (ac < 0 || ac >1);
 
 	if (ac)
@@ -62,61 +61,61 @@ int main()
 
 
 	do{
-		cout << "Choose algorithm\n[1] BT Standart Backtracking\n[2] FC Forward Checking\n[3] FLA Full Look Ahead\nChoice: "; cin >> choice;
-	} while (choice < 1 || choice > 3);
-		// start timer
-		s_time = clock();
+	cout << "Choose algorithm\n[1] BT Standart Backtracking\n[2] FC Forward Checking\n[3] FLA Full Look Ahead\n"; cin >> choice;
+	} while (choice < 1 || choice > 3);	
+	// start timer
+	s_time = clock();
 
-		solve.backtrack(var, constreaints, choice);
+	solve.backtrack(var, constreaints, choice);
+	
+	e_time = clock();
+	t_time = (e_time - s_time) / CLOCKS_PER_SEC;
 
-		e_time = clock();
-		t_time = (e_time - s_time) / CLOCKS_PER_SEC;
 
-
-		if (solve.is_solved())
+	if (solve.is_solved())
+	{
+		assignments = solve.return_assign();
+		cout << "\nSolution:\n";
+		for (unsigned int i = 0; i < assignments.size(); i++)
 		{
-			assignments = solve.return_assign();
-			cout << "\nSolution:\n";
-			for (unsigned int i = 0; i < assignments.size(); i++)
-			{
-				cout << "x" << i << " " << assignments[i] << endl;
-			}
+			cout << "x" << i << " " << assignments[i] << endl;
 		}
-		else
-		{
-			cout << "No solution\n";
-		}
+	}
+	else
+	{
+		cout << "No solution\n";
+	}
 
 
-		cout << "Search took: " << t_time << " seconds.\n" << endl;
-		
-
-
-
-
+	cout << "Search took: " << t_time << endl;
+	// end timer
 
 
 
+	
+	
 
 
 
-
-
-
+	
 
 
 
 
 
+	
+	
+
+	
+
+	
+	
+	
+
+	
+	
 
 
-
-
-
-
-
-
-
-		return 0;
+	return 0;
 }
 

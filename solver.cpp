@@ -48,6 +48,7 @@ int Solver::unassigned(std::vector<_variable> vars, std::vector<_constraint_toup
 // copy variable assignments to assignments vector to be returned to user
 bool Solver::copy_to_assign(std::vector<_variable> vars)
 {
+	assign.clear();
 	for (unsigned int i = 0; i < vars.size(); i++)
 	{
 		assign.push_back(vars[i].assignment);
@@ -63,7 +64,7 @@ std::vector<int> Solver::return_assign()
 }
 
 
-bool Solver::backtrack(std::vector<_variable> vars, std::vector<_constraint_touple> touples)
+bool Solver::backtrack(std::vector<_variable> vars, std::vector<_constraint_touple> touples, int type)
 {
 	// base case
 	// if all are assigned store assignments and return true
@@ -86,12 +87,31 @@ bool Solver::backtrack(std::vector<_variable> vars, std::vector<_constraint_toup
 		if (is_consistant(value_of_var, next_unassigned_var_position, vars, touples))
 		{
 			vars[next_unassigned_var_position].assignment = value_of_var;
-			assigned = backtrack(vars, touples);
+
+			// AC and MAC
+			if (type == FC)
+			{
+				if (!ac(vars, touples))
+				{
+					return false;
+				}
+			}
+			else if (type == MAC)
+			{
+				// make this
+			}
+
+
+			assigned = backtrack(vars, touples, type);
 			if (assigned)
 			{
 				break;
 			}
 		}
+
+		// deleate from domain
+		vars[next_unassigned_var_position].domain.erase(vars[next_unassigned_var_position].domain.begin() + i);
+		i--;
 	}
 	if (!assigned)
 	{
