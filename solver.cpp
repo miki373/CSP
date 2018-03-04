@@ -3,6 +3,8 @@ Solver::Solver()
 {
 	copied = false;
 	solved = false;
+	w_ac = false;
+	w_mac = false;
 }
 
 // Return most constrained variable (its position in vector) because that
@@ -43,21 +45,18 @@ int Solver::unassigned(std::vector<_variable> vars, std::vector<_constraint_toup
 }
 
 
-
+// copy variable assignments to assignments vector to be returned to user
 bool Solver::copy_to_assign(std::vector<_variable> vars)
 {
 	for (unsigned int i = 0; i < vars.size(); i++)
 	{
-		/*if (vars[i].assignment == -1)
-		{
-			vars[i].assignment = 0;
-		}*/
 		assign.push_back(vars[i].assignment);
 	}
 	copied = true;
 	return true;
 }
 
+// returns assignment
 std::vector<int> Solver::return_assign()
 {
 	return assign;
@@ -100,7 +99,7 @@ bool Solver::backtrack(std::vector<_variable> vars, std::vector<_constraint_toup
 	}
 }
 
-
+// returns true if CSP is solver, false if no solution
 bool Solver::is_solved()
 {
 	return solved;
@@ -127,7 +126,7 @@ bool Solver::is_consistant(int proposed_value,int position, std::vector<_variabl
 					return false;
 				}
 			}
-		}//endif
+		}
 
 		if (variables[position].var == touple[i].y.var)
 		{
@@ -140,8 +139,8 @@ bool Solver::is_consistant(int proposed_value,int position, std::vector<_variabl
 					return false;
 				}
 			}
-		}// endif
-	}//endfor
+		}
+	}
 
 	return true;
 }
@@ -171,6 +170,16 @@ bool Solver::ac(std::vector<_variable>& vars, std::vector<_constraint_touple> co
 	for (unsigned int i = 0; i < constraints.size(); i++)
 	{
 		contraints_queue.push(constraints[i]);
+		_variable temp = constraints[i].x;
+		constraints[i].x = constraints[i].y;
+		constraints[i].y = temp;
+		for (unsigned int j = 0; j < constraints[i].constraints.size(); j++)
+		{
+			int temp = constraints[i].constraints[j].x;
+			constraints[i].constraints[j].x = constraints[i].constraints[j].y;
+			constraints[i].constraints[j].y = temp;
+		}
+		contraints_queue.push(constraints[i]);
 	}
 
 	// begin AC
@@ -182,28 +191,26 @@ bool Solver::ac(std::vector<_variable>& vars, std::vector<_constraint_touple> co
 		temp_pos_x = variable_position(vars, temp.x.var);
 		temp_pos_y = variable_position(vars, temp.y.var);
 
-
-		std::cout << "AC DELETE";
 		if (revise(temp, vars[temp_pos_x], vars[temp_pos_y]))
 		{
 			if (vars[temp_pos_x].domain.size() == 0)
 			{
 				return false;
 			}
-
-
-			
 			for (unsigned int i = 0; i < constraints.size(); i++)
 			{
-				if (constraints[i].x.var == vars[temp_pos_x].var && constraints[i].y.var != vars[temp_pos_y].var)
+				if (((constraints[i].x.var == vars[temp_pos_x].var) || (constraints[i].y.var == vars[temp_pos_x].var)) && (constraints[i].y.var != vars[temp_pos_y].var))
 				{
+					contraints_queue.push(constraints[i]);
 					_variable temp = constraints[i].x;
 					constraints[i].x = constraints[i].y;
 					constraints[i].y = temp;
-					contraints_queue.push(constraints[i]);
-				}
-				else if (constraints[i].y.var == vars[temp_pos_x].var)
-				{
+					for (unsigned int j = 0; j < constraints[i].constraints.size(); j++)
+					{
+						int temp = constraints[i].constraints[j].x;
+						constraints[i].constraints[j].x = constraints[i].constraints[j].y;
+						constraints[i].constraints[j].y = temp;
+					}
 					contraints_queue.push(constraints[i]);
 				}
 			}
@@ -250,7 +257,7 @@ bool Solver::revise(_constraint_touple touple, _variable& xi, _variable& xj)
 	return revised;
 }
 
-
+// based on variable value, return variable position in array
 int Solver::variable_position(std::vector<_variable> vars, int variable)
 {
 	for (unsigned int i = 0; i < vars.size(); i++)

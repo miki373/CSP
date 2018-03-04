@@ -26,5 +26,7 @@ private:
 	std::vector<int> assign;
 	bool copied;
 	bool solved;
+	bool w_ac;
+	bool w_mac;
 };
 #endif
